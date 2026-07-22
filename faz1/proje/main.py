@@ -16,6 +16,9 @@ async def main() -> None:
     # Görevleri listele
     yonetici.gorev_listele()
 
+    print(f"Tamamlanan Görev Sayısı: {yonetici.gorevleri_say()}")
+    print(f"Tamamlanmamış Görev Sayısı: {yonetici.tamamlanmamis_gorevleri_say()}")
+
     print("--- 2. GÖREVLER ASENKRON OLARAK BAŞLATILIYOR ---")
     # gather ile 3 görevi aynı anda çalıştırıyoruz
     await asyncio.gather(

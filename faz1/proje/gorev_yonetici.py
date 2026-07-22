@@ -72,3 +72,16 @@ class GorevYoneticisi:
             print(f"[{g['id']}] {g['baslik']} - {g['sure']} sn - {durum}")
         print("==========================\n")
 
+    def gorevleri_say(self) -> int:
+        sayi = 0
+        for s in self.gorevler:
+            if s["tamamlandi"] == True:
+                sayi += 1
+        return sayi
+
+    def tamamlanmamis_gorevleri_say(self) -> int:
+        sayi = 0
+        for s in self.gorevler:
+            if s["tamamlandi"] == False:
+                sayi += 1
+        return sayi
