@@ -9,7 +9,8 @@
 
 ### NOTLAR:
 - 1.1 Tüm konu anlatım ve pratik dosyaları faz1/konular/ klasöründe toplandı (typehinting.py, dosya_islemleri.py, json_islemleri.py, hata_yonetimi.py, asenkron.py).
-- 1.3 Faz 1 Capstone Projesi (Async Task Manager & JSON Logger) süreci faz1/proje/ dizininde başlatıldı.
+- 1.3 Faz 1 Capstone Projesi (Async Task Manager & JSON Logger) başarıyla tamamlandı, test edildi ve tüm Faz 1 kazanımları (Type Hinting, File/JSON I/O, Custom Exceptions, Asyncio/Gather) başarıyla entegre edildi.
+
 
 - 1.2 Git & GitHub repository başlatıldı ve ilk commit/push https://github.com/oguzzakgl/pythonDev.git adresine yapıldı.
 
