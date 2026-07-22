@@ -1,4 +1,18 @@
+## [2026-07-23 - 01:05] - Faz 2: Web, API, Veri Yönetimi & Test
+
+### YAPILANLAR:
+- Faz 2 (Web, API, Veri Yönetimi & Test) süreci başlatıldı.
+
+### KARARLAR:
+- Faz 1'deki interaktif öğretim ve kullanıcının kendi elleriyle yazma modeli Faz 2'de de sürdürülecek.
+
+### NOTLAR:
+- İlk konu: 2.1 HTTP & REST Prensipleri.
+
+---
+
 ## [2026-07-22 - 23:04] - Faz 1: Python İleri Temelleri & Git/GitHub
+
 
 ### YAPILANLAR:
 - Proje başlangıcı yapıldı ve seviye tespit testi tamamlandı.
