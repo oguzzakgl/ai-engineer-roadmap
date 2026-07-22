@@ -4,6 +4,8 @@
 - Faz 2 (Web, API, Veri Yönetimi & Test) süreci başlatıldı.
 - 2.1 HTTP & REST Prenipleri çalışma notları dosyası oluşturuldu (faz2/konular/http_rest.py).
 - 2.2 Pydantic (v2) veri doğrulama konusu tamamlandı (faz2/konular/pydantic_giris.py).
+- 2.3 FastAPI temel web sunucusu ve yerel JSON entegrasyonu tamamlandı (faz2/konular/fastapigiris.py).
+
 
 
 

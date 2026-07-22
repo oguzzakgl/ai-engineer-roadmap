@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "baslik": "Python Çalış",
+        "tamamlandi": true
+    },
+    {
+        "id": 2,
+        "baslik": "FastAPI Öğren",
+        "tamamlandi": false
+    },
+    {
+        "id": 3,
+        "baslik": "PostgreSQL Öğren",
+        "tamamlandi": false
+    }
+]
