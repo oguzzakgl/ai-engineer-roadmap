@@ -2,6 +2,8 @@
 
 ### YAPILANLAR:
 - Faz 2 (Web, API, Veri Yönetimi & Test) süreci başlatıldı.
+- 2.1 HTTP & REST Prenipleri çalışma notları dosyası oluşturuldu (faz2/konular/http_rest.py).
+
 
 ### KARARLAR:
 - Faz 1'deki interaktif öğretim ve kullanıcının kendi elleriyle yazma modeli Faz 2'de de sürdürülecek.
