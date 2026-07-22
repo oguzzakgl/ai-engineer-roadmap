@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "baslik": "Yapay Zeka Modeli Yükleniyor",
+        "tamamlandi": true,
+        "sure": 3
+    },
+    {
+        "id": 2,
+        "baslik": "API Bağlantısı Kuruluyor",
+        "tamamlandi": true,
+        "sure": 1
+    },
+    {
+        "id": 3,
+        "baslik": "Kullanıcı Verileri Okunuyor",
+        "tamamlandi": true,
+        "sure": 2
+    }
+]
