@@ -11,9 +11,10 @@
 # GEREKLİ TÜM KÜTÜPHANE IMPORT'LARINI BURAYA YAZ:
 # (ipucu: pydantic, sqlalchemy, fastapi, sqlalchemy.orm vb.)
 
-# KODUNU BURAYA YAZ:
-
-
+from fastapi import FastAPI, Depends, HTTPException, status
+from pydantic import BaseModel, Field, field_validator
+from sqlalchemy import create_engine, Column, Integer, String, Text
+from sqlalchemy.orm import declarative_base, sessionmaker, Session
 
 # =====================================================================
 # 🛡️ BÖLÜM 1: PYDANTIC VERİ DOĞRULAMA (VALIDATION)
@@ -29,7 +30,17 @@
 
 # KODUNU BURAYA YAZ:
 
+class PromptSemasi(BaseModel):
+    baslik: str = Field(min_length=3, max_length=50)
+    prompt_metni: str = Field(min_length=10)
+    zorluk: int = Field(gt=0, lt=6)
 
+    @field_validator("baslik")
+    @classmethod
+    def baslik_kontrol(cls, v: str):
+        if 'deneme' in v.lower() or 'test' in v.lower():
+            raise ValueError("Baslik 'deneme' veya 'test' kelimesi içermemeli.")
+        return v
 
 # =====================================================================
 # 🗄️ BÖLÜM 2: SQLALCHEMY MODELLERİ & VERİTABANI BAĞLANTISI
@@ -48,8 +59,29 @@
 
 # KODUNU BURAYA YAZ:
 
+engine = create_engine("sqlite:///:memory:")
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+class SQLPromptTablosu(Base):
+    __tablename__ = "promptlar"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    baslik = Column(String, nullable=False)
+    prompt_metni = Column(Text, nullable=False)
+    zorluk = Column(Integer)
 
 
+Base.metadata.create_all(bind=engine)
+
+def get_db():
+    try:
+        db = SessionLocal()
+        yield db
+    finally:
+        db.close()  
+
+    
 # =====================================================================
 # ✍️ BÖLÜM 3: CRUD İŞLEMLERİ (VERİTABANI EKLEME & LİSTELEME)
 # =====================================================================
@@ -62,7 +94,20 @@
 
 # KODUNU BURAYA YAZ:
 
+def prompt_ekle_db(db: Session, prompt_data: PromptSemasi):
+    db_prompt = SQLPromptTablosu(
+        baslik=prompt_data.baslik,
+        prompt_metni=prompt_data.prompt_metni,
+        zorluk=prompt_data.zorluk
+    )
+    
+    db.add(db_prompt)
+    db.commit()
+    db.refresh(db_prompt)
+    return db_prompt
 
+def prompt_listele_db(db: Session):
+    return db.query(SQLPromptTablosu).all()
 
 # =====================================================================
 # 🚀 BÖLÜM 4: FASTAPI ENDPOINT'LERİ (API GİRİŞ KAPILARI)
@@ -80,6 +125,16 @@
 
 # KODUNU BURAYA YAZ:
 
+app = FastAPI()
+
+@app.post("/prompts", response_model=PromptSemasi, status_code=status.HTTP_201_CREATED)
+def create_prompt(prompt_data: PromptSemasi, db: Session = Depends(get_db)):
+    return prompt_ekle_db(db, prompt_data)
+
+@app.get("/prompts", response_model=list[PromptSemasi])
+def read_prompts(db: Session = Depends(get_db)):
+    return prompt_listele_db(db)
+
 
 
 # =====================================================================
@@ -93,4 +148,4 @@ if __name__ == "__main__":
     print("FastAPI Sunucusu Başlatılıyor...")
     print("Swagger Dokümantasyonu için tarayıcıda adrese gidin: http://127.0.0.1:8000/docs")
     # Sunucuyu başlatmak için aşağıdaki satırı kullanacağız
-    # uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
