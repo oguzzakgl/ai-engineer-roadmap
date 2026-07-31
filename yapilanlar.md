@@ -7,6 +7,8 @@
 - 2.3 FastAPI temel web sunucusu ve yerel JSON entegrasyonu tamamlandı (faz2/konular/fastapigiris.py).
 - 2.4 SQL & Veritabanı (PostgreSQL) bulut bağlantısı ve temel CRUD işlemleri tamamlandı (faz2/konular/veritabanisqlneon.py).
 - 2.4 Ham SQL (Raw SQL) pratik çalışma dosyası oluşturuldu (faz2/konular/sql_temelleri.py).
+- Faz 2 Tekrar ödevi dosyası oluşturuldu (faz2/tekrar/faz2_tekrar.py).
+
 
 
 
