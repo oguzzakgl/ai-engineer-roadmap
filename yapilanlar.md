@@ -7,7 +7,10 @@
 - 2.3 FastAPI temel web sunucusu ve yerel JSON entegrasyonu tamamlandı (faz2/konular/fastapigiris.py).
 - 2.4 SQL & Veritabanı (PostgreSQL) bulut bağlantısı ve temel CRUD işlemleri tamamlandı (faz2/konular/veritabanisqlneon.py).
 - 2.4 Ham SQL (Raw SQL) pratik çalışma dosyası oluşturuldu (faz2/konular/sql_temelleri.py).
-- Faz 2 Tekrar ödevi dosyası oluşturuldu (faz2/tekrar/faz2_tekrar.py).
+- Faz 2 Tekrar ödevi dosyası oluşturuldu ve tamamlandı (faz2/tekrar/faz2_tekrar.py).
+- Faz 3 (Yapay Zeka Uygulama Geliştirme) süreci başlatıldı.
+- 3.1 LLM API Entegrasyonu, Structured Outputs ve Function Calling pratikleri yapıldı (faz3/konular/gemini_giris.py, structured_output.py, function_calling.py).
+
 
 
 
