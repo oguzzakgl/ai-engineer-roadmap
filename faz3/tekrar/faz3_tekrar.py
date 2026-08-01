@@ -9,12 +9,19 @@
 from google import genai
 from google.genai import types
 from pydantic import BaseModel, Field
+from sqlalchemy import create_engine, text
+from sqlalchemy.orm import sessionmaker
 
 # ---------------------------------------------------------------------
 # TODO 1: GELÇİ (CLIENT) KURULUMU
 # Gemini API ile konuşmamızı sağlayacak client nesnesini tanımla.
 # ---------------------------------------------------------------------
-client = None # TODO: Buraya client başlatma kodunu yaz.
+client = genai.Client() # TODO: Buraya client başlatma kodunu yaz.
+DATABASE_URL = "postgresql+psycopg2://neondb_owner:npg_tIU6WbK5ysYA@ep-noisy-shadow-ayl4dhke-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require"
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(bind=engine)
+session = SessionLocal()
+
 
 
 # =====================================================================
@@ -28,7 +35,11 @@ client = None # TODO: Buraya client başlatma kodunu yaz.
 # - ozet (yazı - Field açıklamasıyla birlikte)
 # - puan (1-10 arası sayı - Field sınırlayıcılarıyla birlikte)
 class KitapAnalizi(BaseModel):
-    pass # TODO: Alanları tanımla.
+    kitap_adi: str
+    yazar: str
+    sayfa_sayisi: int
+    ozet: str = Field(description="Kitabın tek cümlelik kısa özeti")
+    puan: int = Field(description="1-10 arasında kitaba verilen puan", ge=1, le=10)
 
 
 def kitap_analiz_et():
@@ -36,7 +47,15 @@ def kitap_analiz_et():
     # TODO 3: Gemini'den "Sefiller" kitabı için KitapAnalizi şablonuna 
     # uygun bir JSON çıktısı iste ve ekrana yazdır.
     # Model olarak 'gemini-3.5-flash' kullan.
-    pass
+    response = client.models.generate_content(
+        model='gemini-3.5-flash',
+        contents="Sefiller kitabını analiz et.",
+        config=types.GenerateContentConfig(
+            response_mime_type="application/json",
+            response_schema=KitapAnalizi,
+        )
+    )
+    print(response.text)
 
 
 # =====================================================================
@@ -46,15 +65,19 @@ def kitap_analiz_et():
 # Fonksiyonun docstring açıklamasını ve parametre tipini eksiksiz yaz.
 def indirim_hesapla(fiyat: float) -> str:
     """Verilen fiyat üzerinden %20 indirim hesaplar ve yeni fiyatı döner."""
-    pass # TODO: Fiyatın %20 indirimli halini hesapla ve string olarak geri dön.
+    return f"{(fiyat * 0.80)} TL"
 
 
 def indirim_asistani():
     print("\n--- Adım 2: İndirim Asistanı Çalışıyor ---")
-    # TODO 5: Gemini'ye "1000 TL olan mont için indirim hesaplar mısın?" sorusunu sor.
-    # Yukarıda tanımladığın 'indirim_hesapla' fonksiyonunu Gemini'ye araç (tool) olarak ver.
-    # Son cevabı ekrana yazdır.
-    pass
+    response = client.models.generate_content(
+        model='gemini-3.5-flash',
+        contents="1000 TL olan mont için indirim hesaplar mısın?",
+        config=types.GenerateContentConfig(
+            tools=[indirim_hesapla]
+        )
+    )
+    print(response.text)
 
 
 # =====================================================================
@@ -65,7 +88,13 @@ def embedding_test():
     # TODO 6: "Python ile yapay zeka geliştirmek çok zevkli." cümlesinin 
     # 'gemini-embedding-2' modelini kullanarak embedding vektörünü al.
     # Vektörün boyutunu ve ilk 3 sayısını ekrana yazdır.
-    pass
+    response = client.models.embed_content(
+        model='gemini-embedding-2',
+        contents="Python ile yapay zeka geliştirmek çok zevkli."
+    )
+    vektor = response.embeddings[0].values
+    print("Vektör Boyutu:", len(vektor))
+    print("İlk 3 Sayı:", vektor[:3])
 
 
 # =====================================================================
@@ -75,15 +104,17 @@ def embedding_test():
 # ':soru_vektoru' parametresini Kosinüs Mesafesiyle karşılaştırıp, 
 # en yakın 3 kaydı getiren ham SQL sorgusunu metin (string) olarak yaz.
 sql_sorgusu = """
--- TODO: Buraya pgvector kosinüs mesafesi sorgusunu yaz.
+SELECT *, (koordinat <=> :soru_vektoru) AS mesafe 
+FROM rehber 
+ORDER BY mesafe
+LIMIT 3; 
 """
 
 # =====================================================================
 # 🚀 ÇALIŞTIRMA KISMI
 # =====================================================================
 if __name__ == "__main__":
-    # Testleri sırayla çalıştıracağız. Doldurdukça yorum satırlarını kaldırabilirsin.
-    pass
-    # kitap_analiz_et()
-    # indirim_asistani()
-    # embedding_test()
+    kitap_analiz_et()
+    indirim_asistani()
+    embedding_test()
+
