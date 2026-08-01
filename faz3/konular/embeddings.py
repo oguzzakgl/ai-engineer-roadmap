@@ -7,7 +7,7 @@ client = genai.Client()
 # embed_content fonksiyonunu çağırıyoruz.
 # Neden? Metnimizi yapay zekanın anlamsal uzayındaki sayısal koordinatlara (vektörlere) çevirmek için.
 response = client.models.embed_content(
-    model='text-embedding-004',  # Google'ın resmi, güçlü embedding modeli
+    model='gemini-embedding-2',  # Google'ın resmi, güçlü embedding modeli
     contents='Yapay zeka backend mühendisliğini kolaylaştırıyor.'
 )
 
