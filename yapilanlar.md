@@ -10,6 +10,8 @@
 - Faz 2 Tekrar ödevi dosyası oluşturuldu ve tamamlandı (faz2/tekrar/faz2_tekrar.py).
 - Faz 3 (Yapay Zeka Uygulama Geliştirme) süreci başlatıldı.
 - 3.1 LLM API Entegrasyonu, Structured Outputs ve Function Calling pratikleri yapıldı (faz3/konular/gemini_giris.py, structured_output.py, function_calling.py).
+- Faz 3 Tekrar ödevi başarıyla tamamlandı (faz3/tekrar/faz3_tekrar.py).
+
 
 
 
