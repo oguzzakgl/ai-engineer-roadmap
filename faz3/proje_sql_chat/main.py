@@ -10,6 +10,7 @@ from database import engine, Base, get_db
 import models
 import schemas
 import crud
+import pdf_processor
 
 # =====================================================================
 # 🕸️ VERİTABANI BAŞLANGIÇ AYARLARI
@@ -50,7 +51,8 @@ class NiyetAnalizi(BaseModel):
 def veritabani_hazirla(db: Session = Depends(get_db)):
     # Adım 1: crud.py içindeki veritabani_seed_et() fonksiyonunu çağırın.
     # Adım 2: Başarılı mesajı içeren bir sözlük dönün (Örn: {"status": "success", "message": "..."})
-    return {"message": "Doldurulacak"}
+    crud.veritabani_seed_et(db)
+    return {"status": "success", "message": "Veritabanı başarıyla örnek verilerle dolduruldu."}
 
 
 # =====================================================================
@@ -69,18 +71,52 @@ def kurumsal_asistan(request: schemas.ChatSoruRequest, db: Session = Depends(get
     # - Gemini API'sini Structured Output (Yapılandırılmış Çıktı) kullanarak çağırın.
     # - response_schema olarak yukarıdaki NiyetAnalizi sınıfını verin.
     # - Gemini'nin kullanıcının sorusuna verdiği niyeti ("BELGE_ARAMA" veya "VERITABANI_ANALIZ") okuyun.
-    niyet = "BELGE_ARAMA" # Gemini'den gelecek olan değer
-    
+    try:
+        cevap = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"'{request.soru}' sorusunu analiz et. Hangi kategoriye giriyor? BELGE_ARAMA veya VERITABANI_ANALIZ olarak yanıt ver.",
+            config={
+                "response_mime_type": "application/json",
+                "response_schema": NiyetAnalizi
+            }
+        ).text
+
+        niyet_analizi = NiyetAnalizi.model_validate_json(cevap)
+        niyet = niyet_analizi.niyet
+    except Exception as e:
+        return schemas.ChatCevapResponse(
+            niyet="BELGE_ARAMA", 
+            cevap=f"Niyet analizi hatası: {e}", 
+            kaynaklar=[]
+        )
     # -----------------------------------------------------------------
     # ADIM 2: EĞER NİYET "BELGE_ARAMA" İSE (RAG AKIŞI)
     # -----------------------------------------------------------------
-    # - Soru vektörünü çıkarın (Referans: RAG projesi main.py L71).
-    # - En yakın 3 paragrafı çekin (Referans: RAG projesi main.py L75).
-    # - Prompt'u zenginleştirin ve Gemini'ye cevaplatın (Referans: RAG projesi main.py L89-L105).
-    # - Geriye: schemas.ChatCevapResponse(niyet="BELGE_ARAMA", cevap=..., kaynaklar=...) dönün.
     if niyet == "BELGE_ARAMA":
-        return schemas.ChatCevapResponse(niyet="BELGE_ARAMA", cevap="RAG Dönecek")
+        soru_vektoru = pdf_processor.parca_vektorlerini_uret([request.soru])[0]
+        benzer_paragraflar = crud.en_benzer_paragraflari_bul(db, soru_vektoru, limit=3)
+        
+        kaynak_metinler = [p.metin_icerigi for p in benzer_paragraflar]
+        kaynaklar_birlestirilmis = "\n---".join(kaynak_metinler)
+        
+        zenginlestirilmis_prompt = f"""
+Sana bir soru ve bu soruya yanıt vermen için kaynak dökümanlardan alınmış paragraflar verilecek.
+Lütfen SADECE sana verilen kaynak paragrafları baz alarak soruyu cevapla.
+Eğer verilen kaynak paragraflarda sorunun cevabı yoksa, "Verilen kaynaklarda bu bilgi bulunmuyor." şeklinde yanıt ver.
 
+KAYNAK PARAGRAFLAR:
+{kaynaklar_birlestirilmis}
+
+SORU:
+{request.soru}
+"""
+        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=zenginlestirilmis_prompt
+        )
+        
+        return schemas.ChatCevapResponse(niyet="BELGE_ARAMA", cevap=response.text, kaynaklar=kaynak_metinler)
     # -----------------------------------------------------------------
     # ADIM 3: EĞER NİYET "VERITABANI_ANALIZ" İSE (SQL AKIŞI)
     # -----------------------------------------------------------------
