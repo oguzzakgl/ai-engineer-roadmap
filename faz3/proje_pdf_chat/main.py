@@ -12,82 +12,80 @@ from pdf_processor import pdf_dosyasini_isle, parca_vektorlerini_uret, client
 # =====================================================================
 # 🕸️ VERİTABANI BAŞLANGIÇ AYARLARI
 # =====================================================================
-# PostgreSQL üzerinde pgvector eklentisini açıyoruz
+# Sunucu her açıldığında veritabanında pgvector eklentisinin aktif olduğundan emin oluyoruz.
 with engine.connect() as conn:
+    # CREATE EXTENSION IF NOT EXISTS vector: PostgreSQL veritabanında vektör arama
+    # yapabilmemizi sağlayan pgvector eklentisini aktif eder.
     conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
     conn.commit()
 
-# Tabloları veritabanında oluşturuyoruz
+# models.py'de tanımladığımız tablolar veritabanında yoksa otomatik oluşturulur.
 Base.metadata.create_all(bind=engine)
 
+# FastAPI uygulamamızı başlatıyoruz
 app = FastAPI(title="Akıllı PDF Asistanı API (RAG)")
 
 
 # =====================================================================
-# 🎯 TODO 12: PDF DOSYASI YÜKLEME ENDPOINT'İ (/upload-pdf)
+# 📂 1. ENDPOINT: PDF YÜKLEME (POST /upload-pdf)
 # =====================================================================
-# Dışarıdan yüklenen PDF dosyasını alır, geçici olarak kaydeder,
-# pdf_dosyasini_isle() fonksiyonunu çağırıp DB'ye kaydeder ve yanıt döner.
-# Metot: POST
-# Path: "/upload-pdf"
-# Yanıt Modeli: schemas.PDFDosyaResponse
-# =====================================================================
+# Kullanıcının bilgisayarından seçtiği PDF dosyasını alır ve veritabanına kaydeder.
 @app.post("/upload-pdf", response_model=schemas.PDFDosyaResponse)
 def pdf_yukle(file: UploadFile = File(...), db: Session = Depends(get_db)):
-    # 1. Gelen dosyanın PDF olup olmadığını kontrol et (uzantısı .pdf mi?)
+    # 1. Dosya Güvenlik Kontrolü (Sadece PDF dosyalarına izin veriyoruz)
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Lütfen sadece PDF dosyası yükleyin.")
         
-    # 2. Geçici bir klasör oluştur ve dosyayı oraya kaydet
+    # 2. Geçici Klasör Ayarı
+    # Dosya işleme (okuma/parçalama) yapabilmek için dosyayı geçici olarak sunucu diskine yazıyoruz.
     temp_dir = "temp_uploads"
     os.makedirs(temp_dir, exist_ok=True)
     temp_file_path = os.path.join(temp_dir, file.filename)
     
+    # Gelen dosyayı diskteki geçici dosyaya kopyalıyoruz
     with open(temp_file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
         
     try:
-        # TODO: pdf_processor'daki pdf_dosyasini_isle() fonksiyonunu çağırarak 
-        # dosyayı DB'ye kaydet ve dönen nesneyi 'db_dosya' değişkenine ata.
-        # pdf_dosyasini_isle(temp_file_path, file.filename, db)
+        # 3. PDF İşleme Fabrikasını Çalıştırma:
+        # pdf_dosyasini_isle fonksiyonunu çağırarak okuma, bölme, vektörleme ve DB kaydetme adımlarını yapıyoruz.
         db_dosya = pdf_dosyasini_isle(temp_file_path, file.filename, db)
         return db_dosya
     finally:
-        # 3. İşlem bittikten sonra sunucuda yer kaplamaması için geçici dosyayı siliyoruz
+        # 4. Temizlik Aşaması:
+        # İşlem başarılı veya başarısız olsun, sunucuda çöp dosya kalmaması için geçici dosyayı siliyoruz.
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
 
 # =====================================================================
-# 🎯 TODO 13: AKILLI SOHBET / RAG ENDPOINT'İ (/chat)
+# 📂 2. ENDPOINT: AKILLI SOHBET / RAG (POST /chat)
 # =====================================================================
-# Kullanıcıdan bir soru alır, soruyu vektörleştirir, DB'de arar,
-# en alakalı paragraflarla zenginleştirilmiş prompt'u Gemini'ye sorup cevap döner.
-# Metot: POST
-# Path: "/chat"
-# Yanıt Modeli: schemas.ChatCevapResponse
-# =====================================================================
+# Kullanıcının sorusuna, veritabanından en alakalı döküman parçalarını bulup
+# o parçalar eşliğinde Gemini ile yanıt üretir.
 @app.post("/chat", response_model=schemas.ChatCevapResponse)
 def pdf_ile_sohbet(request: schemas.ChatSoruRequest, db: Session = Depends(get_db)):
     
-    # 1. Kullanıcının sorusunun vektörünü üretiyoruz
-    # parca_vektorlerini_uret() list alan bir fonksiyon olduğu için [request.soru] veriyoruz
+    # 1. Adım: Kullanıcının sorusunu embedding vektörüne (koordinatlara) çeviriyoruz
+    # parca_vektorlerini_uret fonksiyonu liste kabul ettiği için soruyu liste içine koyduk.
     soru_vektoru = parca_vektorlerini_uret([request.soru])[0]
     
-    # 2. Veritabanından bu soruya en benzer 3 paragrafı çekiyoruz
-    # TODO: crud.py'deki en_benzer_paragraflari_bul() fonksiyonunu çağırarak 
-    # en yakın paragrafları bul ve 'benzer_paragraflar' değişkenine ata.
+    # 2. Adım: Veritabanında en benzer 3 paragrafı aratıyoruz
+    # crud.py dosyasında yazdığımız kosinüs benzerliği sorgusunu çalıştırıyoruz.
     benzer_paragraflar = crud.en_benzer_paragraflari_bul(db, soru_vektoru, limit=3)
-
+    
+    # Eğer veritabanında hiçbir paragraf yoksa (kullanıcı henüz PDF yüklemediyse) hata dönüyoruz
     if not benzer_paragraflar:
-        raise HTTPException(status_code=404, detail="Soruyla ilgili veritabanında kaynak bilgi bulunamadı.")
+        raise HTTPException(status_code=404, detail="Soruyla ilgili veritabanında kaynak bilgi bulunamadı. Lütfen önce bir PDF yükleyin.")
         
-    # 3. Benzer paragrafların metin içeriklerini bir listede topluyoruz
+    # 3. Adım: Benzer paragrafların metin içeriklerini bir listede topluyoruz
     kaynak_metinler = [p.metin_icerigi for p in benzer_paragraflar]
     
-    # 4. Prompt'u bu kaynak bilgilerle zenginleştiriyoruz (Context Augmentation)
+    # 4. Adım: Paragrafları aralarına çizgiler koyarak tek bir metin bloğu haline getiriyoruz
     kaynaklar_birlestirilmis = "\n---\n".join(kaynak_metinler)
     
+    # 5. Adım: Zenginleştirilmiş Prompt (Context Augmentation)
+    # Gemini'ye sadece bu kaynakları kullanmasını, kafasından uydurmamasını (hallucination) emrediyoruz.
     zenginlestirilmis_prompt = f"""
 Sana bir soru ve bu soruya yanıt vermen için kaynak dökümanlardan alınmış paragraflar verilecek.
 Lütfen SADECE sana verilen kaynak paragrafları baz alarak soruyu cevapla.
@@ -100,27 +98,21 @@ SORU:
 {request.soru}
 """
     
-    # 5. Gemini'yi çalıştırıyoruz
+    # 6. Adım: Gemini'yi çalıştırıp cevabı alıyoruz
     response = client.models.generate_content(
         model="gemini-3.5-flash",
         contents=zenginlestirilmis_prompt
     )
     
-    # TODO: schemas.ChatCevapResponse formatına uygun olarak cevap ve kaynaklar listesini dön.
-    # return schemas.ChatCevapResponse(cevap=..., kaynaklar=...)
+    # 7. Adım: Cevabı ve faydalandığımız kaynak paragrafları şemaya uygun şekilde dönüyoruz
     return schemas.ChatCevapResponse(cevap=response.text, kaynaklar=kaynak_metinler)
 
 
 # =====================================================================
-# 🎯 TODO 14: PDF DOSYALARINI LİSTELEME ENDPOINT'İ (/files)
+# 📂 3. ENDPOINT: PDF DOSYALARINI LİSTELEME (GET /files)
 # =====================================================================
 # Veritabanında kayıtlı tüm PDF dosyalarının adlarını listeler.
-# Metot: GET
-# Path: "/files"
-# Yanıt Modeli: list[schemas.PDFDosyaResponse]
-# =====================================================================
 @app.get("/files", response_model=list[schemas.PDFDosyaResponse])
 def dosyalari_listele(db: Session = Depends(get_db)):
-    # TODO: crud.py'deki tum_dosyalari_getir() fonksiyonunu çağırıp sonuçları dön.
+    # crud.py'deki tum_dosyalari_getir fonksiyonuyla tüm dosyaları çekip dönüyoruz
     return crud.tum_dosyalari_getir(db)
-
