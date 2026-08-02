@@ -1,3 +1,22 @@
+## [2026-08-02 - 05:13] - Faz 3: GenAI Entegrasyonu & Capstone PDF Chatbot
+
+### YAPILANLAR:
+- 3.2 & 3.3 Vektörleştirme (Embeddings), pgvector RAG entegrasyonu tamamlandı (faz3/konular/embeddings.py, similarity_test.py, simple_rag.py, pgvector_rag.py).
+- 3.4 AI Ajanları & LangGraph Akış Yönetimi (State, Nodes, Edges, Routers) tamamlandı (faz3/konular/agent_intro.py).
+- Gemini API ile interaktif terminal sohbet oturumu pratiği yapıldı (faz3/konular/canli_sohbet.py).
+- Faz 3 Capstone Projesi: Akıllı PDF Asistanı (RAG + pgvector + FastAPI + Premium Glassmorphism UI) dosyaları oluşturuldu ve tamamlandı (faz3/proje_pdf_chat/).
+  - models.py, schemas.py, database.py, crud.py, pdf_processor.py ve main.py yazıldı.
+  - static/index.html ile şık, modern bir karanlık mod chat arayüzü tasarlandı.
+
+### KARARLAR:
+- Vektör tabanlı anlamsal aramayı (Semantic Search) Neon PostgreSQL bulut veritabanında pgvector eklentisiyle (<=> operatorü) çalıştırma kararı alındı.
+- Büyük PDF dosyalarının işlenmesi sırasında sunucunun yorulmaması için kelime bazlı akıllı parçalama (chunking) algoritması tercih edildi.
+
+### NOTLAR:
+- Projeyi çalıştırmak için terminalden `cd faz3/proje_pdf_chat` dizinine gidip `uvicorn main:app --reload` komutu girilmelidir.
+
+---
+
 ## [2026-07-23 - 01:05] - Faz 2: Web, API, Veri Yönetimi & Test
 
 ### YAPILANLAR:
