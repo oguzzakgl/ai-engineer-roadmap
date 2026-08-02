@@ -126,27 +126,62 @@ SORU:
     #   ve aralarındaki ilişkileri (Foreign Key) anlatan bir prompt hazırlayın.
     # - Gemini'ye bu şemaya göre kullanıcının sorusunu yanıtlayacak GEÇERLİ bir SQL sorgusu üretmesini söyleyin.
     # - Gemini'den dönen temiz SQL sorgu string'ini alın.
-    sql_sorgusu = "SELECT * FROM siparisler;" # Gemini'den gelecek olan sorgu
-    
-    # Adım 3b: SQL'i Çalıştırma
-    # - crud.py dosyasında yazacağımız dinamik_sql_calistir(db, sql_sorgusu) fonksiyonunu çağırın.
-    # - Dönen ham tablo sonuçlarını bir değişkene atayın (tablo_verileri).
-    tablo_verileri = []
-    
-    # Adım 3c: Sonuçları Gemini ile Yorumlatma
-    # - Elde ettiğimiz tablo verilerini ve kullanıcının sorusunu tekrar Gemini'ye gönderip,
-    #   insanların anlayacağı dilde, kibar bir analiz özeti yazmasını isteyin.
-    # - Örn Prompt: "Kullanıcı sorusu: ... Çalıştırılan SQL sonucu gelen veriler: ... Lütfen bunu yorumla."
-    analiz_ozeti = "Grafikte de görebileceğiniz gibi..." # Gemini'den gelecek özet metin
-    
-    # Adım 3d: Yanıt Dönme
-    # - Geriye: schemas.ChatCevapResponse(
-    #               niyet="VERITABANI_ANALIZ", 
-    #               cevap=analiz_ozeti, 
-    #               sql_sorgusu=sql_sorgusu, 
-    #               tablo_verisi=tablo_verileri
-    #           ) dönün.
-    return schemas.ChatCevapResponse(niyet="VERITABANI_ANALIZ", cevap="SQL Dönecek")
+    if niyet == "VERITABANI_ANALIZ":
+        sema_tanimi = """
+Sen bir PostgreSQL SQL uzmanısın. Kullanıcının sorusunu yanıtlayacak geçerli SQL sorguları üretmelisin.
+Sadece ve sadece ham SQL sorgusu dön, markdown formatı (```sql veya ```) KULLANMA.
+
+Veritabanımızdaki tablolar ve kolonlar şunlardır:
+
+1. musteriler:
+   - id: INTEGER (Primary Key)
+   - ad: VARCHAR (Müşteri Adı Soyadı)
+   - sehir: VARCHAR (Yaşadığı Şehir)
+
+2. urunler:
+   - id: INTEGER (Primary Key)
+   - ad: VARCHAR (Ürün Adı)
+   - fiyat: FLOAT (Ürün Fiyatı)
+   - stok: INTEGER (Stok Miktarı)
+
+3. siparisler:
+   - id: INTEGER (Primary Key)
+   - musteri_id: INTEGER (Foreign Key -> musteriler.id)
+   - urun_id: INTEGER (Foreign Key -> urunler.id)
+   - adet: INTEGER (Satın alınan miktar)
+   - tarih: VARCHAR (Sipariş tarihi, format: YYYY-MM-DD)
+"""
+
+        # Gemini'den SQL üretiyoruz
+        sql_response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=f"{sema_tanimi}\n\nKullanıcı Sorusu: '{request.soru}'\n\nBu soruyu yanıtlayacak SQL sorgusunu yaz:"
+        )
+        sql_sorgusu = sql_response.text.strip()
+
+        # SQL'i veritabanında çalıştırıp satırları sözlük listesi olarak alıyoruz
+        tablo_verileri = crud.dinamik_sql_calistir(db, sql_sorgusu)
+
+        # Çıkan verileri Gemini ile yorumlatıyoruz
+        analiz_prompt = f"""
+Kullanıcının sorusu: '{request.soru}'
+Veritabanından dönen veriler: {tablo_verileri}
+Çalıştırılan SQL sorgusu: {sql_sorgusu}
+
+Lütfen bu verileri analiz ederek kullanıcının sorusuna doğrudan, kibar ve Türkçe bir yanıt yaz.
+"""
+        analiz_response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=analiz_prompt
+        )
+        analiz_ozeti = analiz_response.text
+
+        return schemas.ChatCevapResponse(
+            niyet="VERITABANI_ANALIZ",
+            cevap=analiz_ozeti,
+            sql_sorgusu=sql_sorgusu,
+            tablo_verisi=tablo_verileri
+        )
 
 
 # =====================================================================
