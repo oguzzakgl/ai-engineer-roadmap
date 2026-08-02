@@ -41,23 +41,18 @@ def pdf_metnini_oku(file_path: str) -> str:
 def metni_parcalara_bol(metin: str, chunk_size: int = 800) -> list[str]:
     # 1. Metni kelimelerine ayırıyoruz (kelimelerin ortadan bölünmemesi için)
     words = metin.split()
-    
     # 2. Sonuçta elde edeceğimiz paragrafların ekleneceği liste
     parcalar = []
-    
     # 3. Aktif olarak kelimeleri biriktirdiğimiz geçici sepet
     current_chunk = []
-    
     # 4. Sepetteki kelimelerin toplam harf/karakter uzunluğu sayacı
     current_length = 0
-
     # 5. Tüm kelimeleri sırayla döngüye sokuyoruz
     for word in words:
         # Kelimeyi sepete ekle
         current_chunk.append(word)
         # Kelimenin harf sayısını ve 1 adet boşluk karakterini sayaca ekle
-        current_length += len(word) + 1
-        
+        current_length += len(word) + 1 
         # Eğer sepetin toplam karakter uzunluğu belirlenen limiti (800) geçtiyse:
         if current_length >= chunk_size:
             # Sepetteki kelimeleri aralarına boşluk koyarak birleştir ve listeye ekle
@@ -66,7 +61,6 @@ def metni_parcalara_bol(metin: str, chunk_size: int = 800) -> list[str]:
             current_chunk = []
             # Sayacı sıfırla
             current_length = 0
-
     # 6. Döngü bittiğinde sepette kalan son kelimeleri de son bir parça olarak ekle
     if current_chunk:
         parcalar.append(" ".join(current_chunk))
@@ -86,10 +80,13 @@ def metni_parcalara_bol(metin: str, chunk_size: int = 800) -> list[str]:
 # client.models.embed_content(model="gemini-embedding-2", contents=parcalar)
 # =====================================================================
 def parca_vektorlerini_uret(parcalar: list[str]) -> list[list[float]]:
-    vektorler = []
-    # TODO: Gemini modelini kullanarak her bir parçanın embedding vektörünü al.
-    return vektorler
-
+    # Gemini modelini kullanarak tüm parçaların embedding vektörlerini alıyoruz
+    response = client.models.embed_content(
+        model="gemini-embedding-2",
+        contents=parcalar
+    )
+    # response.embeddings içindeki her bir elemanın koordinat değerlerini (values) liste halinde çıkarıyoruz
+    return [e.values for e in response.embeddings]
 
 # =====================================================================
 # 🎯 TODO 9: TÜM PDF SÜRECİNİ YÖNETME VE DB'YE KAYDETME (MASTER PROCESS)
