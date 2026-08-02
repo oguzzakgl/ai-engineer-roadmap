@@ -20,7 +20,9 @@ client = genai.Client()
 # =====================================================================
 def pdf_metnini_oku(file_path: str) -> str:
     tum_metin = ""
-    # TODO: Burayı pypdf kullanarak doldur.
+    reader=PdfReader(file_path)
+    for page in reader.pages:
+        tum_metin += page.extract_text()
     return tum_metin
 
 
@@ -37,9 +39,41 @@ def pdf_metnini_oku(file_path: str) -> str:
 # Veya en basitinden metni doğrudan 800 karakterlik dilimlere bölebilirsin.
 # =====================================================================
 def metni_parcalara_bol(metin: str, chunk_size: int = 800) -> list[str]:
+    # 1. Metni kelimelerine ayırıyoruz (kelimelerin ortadan bölünmemesi için)
+    words = metin.split()
+    
+    # 2. Sonuçta elde edeceğimiz paragrafların ekleneceği liste
     parcalar = []
-    # TODO: Metni mantıklı chunk_size boyutlarında parçalara bölüp 'parcalar' listesine ekle.
+    
+    # 3. Aktif olarak kelimeleri biriktirdiğimiz geçici sepet
+    current_chunk = []
+    
+    # 4. Sepetteki kelimelerin toplam harf/karakter uzunluğu sayacı
+    current_length = 0
+
+    # 5. Tüm kelimeleri sırayla döngüye sokuyoruz
+    for word in words:
+        # Kelimeyi sepete ekle
+        current_chunk.append(word)
+        # Kelimenin harf sayısını ve 1 adet boşluk karakterini sayaca ekle
+        current_length += len(word) + 1
+        
+        # Eğer sepetin toplam karakter uzunluğu belirlenen limiti (800) geçtiyse:
+        if current_length >= chunk_size:
+            # Sepetteki kelimeleri aralarına boşluk koyarak birleştir ve listeye ekle
+            parcalar.append(" ".join(current_chunk))
+            # Yeni paragraf için sepeti boşalt
+            current_chunk = []
+            # Sayacı sıfırla
+            current_length = 0
+
+    # 6. Döngü bittiğinde sepette kalan son kelimeleri de son bir parça olarak ekle
+    if current_chunk:
+        parcalar.append(" ".join(current_chunk))
+        
+    # 7. Oluşan tüm paragrafların listesini geri dön
     return parcalar
+
 
 
 # =====================================================================
