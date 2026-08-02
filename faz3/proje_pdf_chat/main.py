@@ -50,7 +50,7 @@ def pdf_yukle(file: UploadFile = File(...), db: Session = Depends(get_db)):
         # TODO: pdf_processor'daki pdf_dosyasini_isle() fonksiyonunu çağırarak 
         # dosyayı DB'ye kaydet ve dönen nesneyi 'db_dosya' değişkenine ata.
         # pdf_dosyasini_isle(temp_file_path, file.filename, db)
-        db_dosya = None 
+        db_dosya = pdf_dosyasini_isle(temp_file_path, file.filename, db)
         return db_dosya
     finally:
         # 3. İşlem bittikten sonra sunucuda yer kaplamaması için geçici dosyayı siliyoruz
@@ -77,8 +77,8 @@ def pdf_ile_sohbet(request: schemas.ChatSoruRequest, db: Session = Depends(get_d
     # 2. Veritabanından bu soruya en benzer 3 paragrafı çekiyoruz
     # TODO: crud.py'deki en_benzer_paragraflari_bul() fonksiyonunu çağırarak 
     # en yakın paragrafları bul ve 'benzer_paragraflar' değişkenine ata.
-    benzer_paragraflar = []
-    
+    benzer_paragraflar = crud.en_benzer_paragraflari_bul(db, soru_vektoru, limit=3)
+
     if not benzer_paragraflar:
         raise HTTPException(status_code=404, detail="Soruyla ilgili veritabanında kaynak bilgi bulunamadı.")
         
@@ -108,7 +108,7 @@ SORU:
     
     # TODO: schemas.ChatCevapResponse formatına uygun olarak cevap ve kaynaklar listesini dön.
     # return schemas.ChatCevapResponse(cevap=..., kaynaklar=...)
-    return {"cevap": "", "kaynaklar": []}
+    return schemas.ChatCevapResponse(cevap=response.text, kaynaklar=kaynak_metinler)
 
 
 # =====================================================================
@@ -122,4 +122,5 @@ SORU:
 @app.get("/files", response_model=list[schemas.PDFDosyaResponse])
 def dosyalari_listele(db: Session = Depends(get_db)):
     # TODO: crud.py'deki tum_dosyalari_getir() fonksiyonunu çağırıp sonuçları dön.
-    return []
+    return crud.tum_dosyalari_getir(db)
+
