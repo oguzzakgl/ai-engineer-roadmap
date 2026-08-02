@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı PDF Asistanı (RAG)</title>
+    <!-- Modern Outfit Yazı Tipi -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Stil Dosyamız -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- 📂 SOL PANEL: Yükleme ve Dosya Listesi -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Akıllı PDF Asistanı</h2>
+                <p>Bulut Tabanlı RAG Sistemi</p>
+            </div>
+
+            <!-- PDF Yükleme Kutusu -->
+            <div class="upload-section">
+                <h3>PDF Yükle</h3>
+                <label for="pdf-file" class="drop-zone" id="drop-zone">
+                    <span class="drop-zone-text">Dosya Seç veya Sürükle</span>
+                    <input type="file" id="pdf-file" accept=".pdf" style="display: none;">
+                </label>
+                <div id="upload-status" class="status-msg"></div>
+            </div>
+
+            <!-- Yüklenen Dosyaların Listesi -->
+            <div class="files-section">
+                <h3>Kayıtlı Belgeler</h3>
+                <ul id="files-list" class="files-list">
+                    <!-- JS dinamik olarak dolduracak -->
+                    <li class="empty-list">Henüz belge yüklenmedi.</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- 💬 SAĞ PANEL: Sohbet Ekranı -->
+        <main class="chat-container">
+            <header class="chat-header">
+                <div class="header-status">
+                    <span class="pulse-icon"></span>
+                    <span>Gemini 3.5-Flash Bağlı</span>
+                </div>
+            </header>
+
+            <!-- Sohbet Mesajları -->
+            <div class="chat-messages" id="chat-messages">
+                <div class="ai-message system-msg">
+                    <p>Merhaba! Sisteme yüklediğiniz PDF dosyaları hakkında sorular sorabilirsiniz. Lütfen soldan bir dosya yükleyin ve sohbete başlayın.</p>
+                </div>
+            </div>
+
+            <!-- Soru Gönderme Alanı -->
+            <form class="chat-input-area" id="chat-form">
+                <input type="text" id="user-question" placeholder="PDF içeriği hakkında bir soru sorun..." required autocomplete="off">
+                <button type="submit" id="send-btn">Sor</button>
+            </form>
+        </main>
+
+    </div>
+
+    <!-- JavaScript logic dosyamız -->
+    <script src="app.js"></script>
+</body>
+</html>

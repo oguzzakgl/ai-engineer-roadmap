@@ -1,0 +1,315 @@
+/* =====================================================================
+   🎨 PROJE ANA TEMASI & RESETS
+   ===================================================================== */
+:root {
+    --bg-dark: #0f172a;        /* Derin uzay laciverti */
+    --panel-dark: #1e293b;     /* Panel arka planı */
+    --border-color: #334155;   /* Zarif gri çizgiler */
+    --text-main: #f8fafc;      /* Temiz beyaz metin */
+    --text-muted: #94a3b8;     /* Soluk gri yardımcı metin */
+    --accent-purple: #8b5cf6;  /* Parlak mor vurgu rengi */
+    --accent-blue: #3b82f6;    /* Parlak mavi vurgu rengi */
+    --msg-user: #4f46e5;       /* Kullanıcı mesaj balonu */
+    --msg-ai: #1e293b;         /* Yapay zeka mesaj balonu */
+    --border-radius: 12px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* =====================================================================
+   🕸️ ANA YERLEŞİM (LAYOUT)
+   ===================================================================== */
+.app-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* sol panel */
+.sidebar {
+    width: 320px;
+    background-color: #0b0f19;
+    border-right: 1px solid var(--border-color);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sidebar-header h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.sidebar-header p {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* =====================================================================
+   📂 PDF YÜKLEME KUTUSU (UPLOAD SECTION)
+   ===================================================================== */
+.upload-section h3, .files-section h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.drop-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background-color: rgba(30, 41, 59, 0.2);
+}
+
+.drop-zone:hover {
+    border-color: var(--accent-purple);
+    background-color: rgba(139, 92, 246, 0.05);
+}
+
+.drop-zone-text {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.status-msg {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-success { color: #10b981; }
+.status-error { color: #ef4444; }
+.status-loading { color: #f59e0b; }
+
+/* =====================================================================
+   📃 DOSYA LİSTESİ (FILES LIST)
+   ===================================================================== */
+.files-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.files-list li {
+    padding: 10px 14px;
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty-list {
+    color: var(--text-muted);
+    font-style: italic;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* =====================================================================
+   💬 SOHBET EKRANI (CHAT CONTAINER)
+   ===================================================================== */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-dark);
+}
+
+.chat-header {
+    height: 70px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    background-color: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.header-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.pulse-icon {
+    width: 8px;
+    height: 8px;
+    background-color: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    animation: pulse 1.6s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Mesaj Alanı */
+.chat-messages {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Mesaj Kabarcıkları */
+.user-message, .ai-message {
+    max-width: 75%;
+    padding: 14px 18px;
+    border-radius: var(--border-radius);
+    line-height: 1.5;
+    font-size: 14px;
+    animation: slideUp 0.3s ease-out;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: var(--msg-user);
+    color: var(--text-main);
+    border-bottom-right-radius: 4px;
+}
+
+.ai-message {
+    align-self: flex-start;
+    background-color: var(--msg-ai);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+}
+
+.system-msg {
+    border-style: dashed;
+    background-color: rgba(30, 41, 59, 0.2);
+    color: var(--text-muted);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================================
+   📖 CITATIONS (KAYNAK GÖSTERİMLERİ)
+   ===================================================================== */
+.citations-container {
+    margin-top: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 8px;
+}
+
+.citations-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    user-select: none;
+}
+
+.citations-title:hover {
+    color: var(--accent-purple);
+}
+
+.citations-list {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.citation-card {
+    padding: 8px 12px;
+    background-color: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.4;
+}
+
+/* =====================================================================
+   ⌨️ METİN GİRİŞ ALANI (INPUT AREA)
+   ===================================================================== */
+.chat-input-area {
+    padding: 20px 30px;
+    display: flex;
+    gap: 12px;
+    background-color: rgba(15, 23, 42, 0.9);
+    border-top: 1px solid var(--border-color);
+}
+
+.chat-input-area input {
+    flex: 1;
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 14px 20px;
+    color: var(--text-main);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.chat-input-area input:focus {
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.chat-input-area button {
+    background-color: var(--accent-purple);
+    color: var(--text-main);
+    border: none;
+    border-radius: 8px;
+    padding: 0 24px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input-area button:hover {
+    background-color: #7c3aed;
+}
+
+.chat-input-area button:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
