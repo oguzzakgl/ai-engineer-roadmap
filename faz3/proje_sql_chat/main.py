@@ -2,6 +2,7 @@
 import os
 import shutil
 from fastapi import FastAPI, Depends, UploadFile, File, HTTPException
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from pydantic import BaseModel, Field
@@ -192,3 +193,22 @@ Lütfen bu verileri analiz ederek kullanıcının sorusuna doğrudan, kibar ve T
 # - 'frontend' klasörünü StaticFiles yardımıyla ana dizine (/) bağlayın.
 #   (Referans: RAG projesi main.py L121-L125)
 # =====================================================================
+@app.post("/upload-pdf")
+def pdf_yukle(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    temp_dir = "temp_uploads"
+    os.makedirs(temp_dir, exist_ok=True)
+    temp_file_path = os.path.join(temp_dir, file.filename)
+    
+    try:
+        with open(temp_file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        pdf_processor.pdf_dosyasini_isle(temp_file_path, file.filename, db)
+        return {"status": "success", "message": f"{file.filename} başarıyla yüklendi ve indekslendi."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"PDF işleme hatası: {str(e)}")
+    finally:
+        if os.path.exists(temp_file_path):
+            os.remove(temp_file_path)
+
+app.mount("/", StaticFiles(directory="frontend", html=True), name="static")
