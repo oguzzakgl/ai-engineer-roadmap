@@ -1,19 +1,19 @@
-## [2026-08-02 - 05:13] - Faz 3: GenAI Entegrasyonu & Capstone PDF Chatbot
+## [2026-08-02 - 05:22] - Faz 3: GenAI Entegrasyonu & Akıllı RAG Asistanı
 
 ### YAPILANLAR:
-- 3.2 & 3.3 Vektörleştirme (Embeddings), pgvector RAG entegrasyonu tamamlandı (faz3/konular/embeddings.py, similarity_test.py, simple_rag.py, pgvector_rag.py).
-- 3.4 AI Ajanları & LangGraph Akış Yönetimi (State, Nodes, Edges, Routers) tamamlandı (faz3/konular/agent_intro.py).
-- Gemini API ile interaktif terminal sohbet oturumu pratiği yapıldı (faz3/konular/canli_sohbet.py).
-- Faz 3 Capstone Projesi: Akıllı PDF Asistanı (RAG + pgvector + FastAPI + Premium Glassmorphism UI) dosyaları oluşturuldu ve tamamlandı (faz3/proje_pdf_chat/).
-  - models.py, schemas.py, database.py, crud.py, pdf_processor.py ve main.py yazıldı.
-  - static/index.html ile şık, modern bir karanlık mod chat arayüzü tasarlandı.
+- LangGraph ile ilk StateGraph ajan akışı ve Koşullu Yönlendirme (Router) tasarımı tamamlandı (faz3/konular/agent_intro.py).
+- Gemini SDK'sı ile `chats.create` servisi kullanılarak canlı interaktif sohbet pratiği yapıldı (faz3/konular/canli_sohbet.py).
+- Akıllı PDF Chatbot (RAG) Capstone projesi başlatıldı (faz3/proje_pdf_chat/).
+- Veritabanı bağlantı ayarı ve ORM modelleri (`models.py`, `database.py`) kuruldu.
+- Pydantic doğrulama şemaları (`schemas.py`) hazırlandı.
+- PDF okuma (`pypdf`), kelime bazlı akıllı parçalama (`metni_parcalara_bol`) ve Gemini `gemini-embedding-2` ile toplu vektör üretme katmanı (`pdf_processor.py`) kodlandı.
+- `pgvector` benzerlik araması (`<=>` Cosine Distance) ve ham verileri nesnelere eşleme katmanı (`crud.py`) tamamlandı.
+- PDF yükleme, RAG sohbet (Context Augmentation) ve dosya listeleme FastAPI uç noktaları (`main.py`) kodlandı.
+- Tüm projenin kodları adım adım Türkçe eğitim yorum satırlarıyla zenginleştirildi ve GitHub'a başarıyla gönderildi.
 
 ### KARARLAR:
-- Vektör tabanlı anlamsal aramayı (Semantic Search) Neon PostgreSQL bulut veritabanında pgvector eklentisiyle (<=> operatorü) çalıştırma kararı alındı.
-- Büyük PDF dosyalarının işlenmesi sırasında sunucunun yorulmaması için kelime bazlı akıllı parçalama (chunking) algoritması tercih edildi.
-
-### NOTLAR:
-- Projeyi çalıştırmak için terminalden `cd faz3/proje_pdf_chat` dizinine gidip `uvicorn main:app --reload` komutu girilmelidir.
+- RAG projesinin veritabanında vektörleri `Text` tipinde tutup, sorgu esnasında `CAST(embedding AS vector)` ile pgvector'e dönüştürerek SQLAlchemy ile tam uyumlu ve temiz bir yapı kurulması kararlaştırıldı.
+- Mülakatlarda ve gerçek projelerde kodun ezberlenmesi yerine "ne, neden ve nasıl çalışıyor" mantığına odaklanıldı.
 
 ---
 
@@ -26,6 +26,7 @@
 - 2.3 FastAPI temel web sunucusu ve yerel JSON entegrasyonu tamamlandı (faz2/konular/fastapigiris.py).
 - 2.4 SQL & Veritabanı (PostgreSQL) bulut bağlantısı ve temel CRUD işlemleri tamamlandı (faz2/konular/veritabanisqlneon.py).
 - 2.4 Ham SQL (Raw SQL) pratik çalışma dosyası oluşturuldu (faz2/konular/sql_temelleri.py).
+- Fiziksel veritabanı tabloları Neon DB üzerinde oluşturuldu.
 - Faz 2 Tekrar ödevi dosyası oluşturuldu ve tamamlandı (faz2/tekrar/faz2_tekrar.py).
 - Faz 3 (Yapay Zeka Uygulama Geliştirme) süreci başlatıldı.
 - 3.1 LLM API Entegrasyonu, Structured Outputs ve Function Calling pratikleri yapıldı (faz3/konular/gemini_giris.py, structured_output.py, function_calling.py).
