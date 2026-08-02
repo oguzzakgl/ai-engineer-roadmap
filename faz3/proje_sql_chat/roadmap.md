@@ -37,13 +37,20 @@ faz3/proje_sql_chat/
 * [ ] Gemini'ye veritabanı şemamızı (tablo ve kolon adlarını) öğreterek sadece geçerli SQL üretecek bir Prompt tasarlamak.
 * [ ] Gemini'nin ürettiği SQL kodunun güvenli olup olmadığını (zararlı komutlar: DROP, DELETE, TRUNCATE vb. içerip içermediğini) denetleyecek güvenlik katmanı yazmak.
 
-### 📍 Aşama 3: Sesli Arama (Audio to SQL) Entegrasyonu
-* [ ] Kullanıcının tarayıcıdan kaydettiği ses dosyasını (WAV/MP3) FastAPI'ye yükleyen endpoint'i hazırlamak.
-* [ ] Ses dosyasını Gemini'ye gönderip, Gemini'nin sesi dinleyerek analiz isteğini anlamasını ve SQL'e dönüştürmesini sağlamak.
+### 📍 Aşama 3: Akıllı Yönlendirici (Intent Router) ve Gemini SQL Entegrasyonu
+* [ ] Gemini Structured Outputs ile niyet analizi (Intent Classifier) yapısını kurmak.
+* [ ] Niyete göre soruyu RAG (PDF) veya SQL (Veritabanı) kanallarına yönlendirecek yönlendiriciyi yazmak.
+* [ ] Gemini'ye veritabanı şemamızı öğretip, yazılı sorulardan güvenli SQL sorguları üretmesini sağlamak.
 
 ### 📍 Aşama 4: Dinamik SQL Çalıştırıcı & API
 * [ ] Üretilen SQL sorgusunu PostgreSQL üzerinde koşturup sonuçları JSON listesi olarak dönecek yapıyı kurmak.
+* [ ] Dönen SQL sonuçlarını Gemini'ye yorumlatarak doğal dilde özet yazdırmak.
 
 ### 📍 Aşama 5: Dashboard Arayüzü & Grafik Çizimi (Chart.js)
-* [ ] Mor/Mavi tonlarda, ses kayıt yeteneği olan premium bir karanlık mod kontrol paneli (dashboard) arayüzü çizmek.
+* [ ] Mor/Mavi tonlarda premium bir karanlık mod kontrol paneli (dashboard) arayüzü çizmek.
 * [ ] Gelen analiz verilerini Chart.js ile dinamik çizgi, sütun ve pasta grafiklerine dönüştürmek.
+
+---
+
+## 🔮 Gelecek Geliştirmeler (Bonus Aşama)
+* **Sesli Sorgulama (Voice-to-SQL):** Kullanıcının tarayıcıdan kaydettiği ses dosyasını Gemini'ye gönderip, Gemini'nin sesi dinleyerek SQL sorgusuna dönüştürmesini sağlamak.
