@@ -17,8 +17,7 @@ with engine.connect() as conn:
     conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector;"))
     conn.commit()
 
-# Tabloları veritabanında temizleyip yeniden oluşturuyoruz (Sütun uyuşmazlığını çözmek için)
-Base.metadata.drop_all(bind=engine)
+# Tabloları veritabanında oluşturuyoruz
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Akıllı PDF Asistanı API (RAG)")
@@ -124,9 +123,4 @@ SORU:
 def dosyalari_listele(db: Session = Depends(get_db)):
     # TODO: crud.py'deki tum_dosyalari_getir() fonksiyonunu çağırıp sonuçları dön.
     return crud.tum_dosyalari_getir(db)
-
-# Static dosyaları (Frontend arayüzünü) sunuyoruz.
-# Bu kod, "static" klasöründeki index.html dosyasını ana sayfada açacaktır.
-from fastapi.staticfiles import StaticFiles
-app.mount("/", StaticFiles(directory="static", html=True), name="static")
 
