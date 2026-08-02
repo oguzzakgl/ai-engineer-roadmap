@@ -12,8 +12,11 @@ from pydantic import BaseModel, Field
 # (from_attributes = True eklemeyi unutma, çünkü DB modelinden veri okuyacak)
 # =====================================================================
 class PDFDosyaResponse(BaseModel):
-    pass # TODO: Burayı doldur.
-
+    id: int = Field(ge=0, description="PDF ID'si")
+    dosya_adi: str = Field(min_length=1, max_length=255, description="PDF dosyasının adı")
+   
+    class Config:
+        from_attributes = True
 
 # =====================================================================
 # 🎯 TODO 4: SOHBET SORU İSTEK ŞEMASI
@@ -24,7 +27,7 @@ class PDFDosyaResponse(BaseModel):
 # - soru: str (Kullanıcının yazdığı soru metni. min_length=3 olsun)
 # =====================================================================
 class ChatSoruRequest(BaseModel):
-    pass # TODO: Burayı doldur.
+    soru: str = Field(min_length=3, description="PDF dosyasına sorulacak soru")
 
 
 # =====================================================================
@@ -37,4 +40,5 @@ class ChatSoruRequest(BaseModel):
 # - kaynaklar: list[str] (Cevabın oluşturulmasında kullanılan kaynak paragraflar)
 # =====================================================================
 class ChatCevapResponse(BaseModel):
-    pass # TODO: Burayı doldur.
+    cevap: str = Field(min_length=1, description="Yapay zekanın ürettiği yanıt")
+    kaynaklar: list[str] = Field(description="Cevabın oluşturulmasında kullanılan kaynak paragraflar")
