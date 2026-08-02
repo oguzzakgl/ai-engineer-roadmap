@@ -15,6 +15,13 @@ from database import Base  # database.py dosyasındaki Base sınıfını içe ak
 # İlişki (Relationship):
 # - siparisler: SiparisTablosu ile ilişki (relationship, back_populates="musteri")
 # =====================================================================
+class MusteriTablosu(Base):
+    __tablename__ = "musteriler"
+    id = Column(Integer, primary_key=True, index=True)
+    ad = Column(String, nullable=False)
+    sehir = Column(String, nullable=False)
+
+    siparisler = relationship("SiparisTablosu", back_populates="musteri")
 
 
 # =====================================================================
@@ -31,6 +38,15 @@ from database import Base  # database.py dosyasındaki Base sınıfını içe ak
 # - siparisler: SiparisTablosu ile ilişki (relationship, back_populates="urun")
 # =====================================================================
 
+class UrunTablosu(Base):
+    __tablename__ = "urunler"
+    id = Column(Integer, primary_key=True, index=True)
+    ad = Column(String, nullable=False)
+    fiyat = Column(Float, nullable=False)
+    stok = Column(Integer, nullable=False)
+
+    siparisler = relationship("SiparisTablosu", back_populates="urun")
+    
 
 # =====================================================================
 # 🎯 TODO 4: SİPARİŞ TABLOSUNU OLUŞTURUN (SiparisTablosu)
@@ -47,11 +63,36 @@ from database import Base  # database.py dosyasındaki Base sınıfını içe ak
 # - musteri: MusteriTablosu'na geri bağlayan köprü (relationship, back_populates="siparisler")
 # - urun: UrunTablosu'na geri bağlayan köprü (relationship, back_populates="siparisler")
 # =====================================================================
+class SiparisTablosu(Base):
+    __tablename__ = "siparisler"
+    id = Column(Integer, primary_key=True, index=True)
+    musteri_id = Column(Integer, ForeignKey("musteriler.id"), nullable=False)
+    urun_id = Column(Integer, ForeignKey("urunler.id"), nullable=False)
+    adet = Column(Integer, nullable=False)
+    tarih = Column(String, nullable=False)
 
-
+    musteri = relationship("MusteriTablosu", back_populates="siparisler")
+    urun = relationship("UrunTablosu", back_populates="siparisler")
+    
 # =====================================================================
 # 🎯 TODO 5: PDF DOSYA VE PARAGRAF TABLOLARINI YAZIN (RAG İÇİN)
 # =====================================================================
 # PDFDosyaTablosu (tablo adı: "pdf_dosyalari") ve PDFParagrafTablosu (tablo adı: "pdf_paragraflar") modellerini ekleyin.
 # (Referans: faz3/proje_pdf_chat/models.py dosyasındaki iki tablo modelini birebir buraya kopyalayabilirsiniz.)
 # =====================================================================
+
+class PDFDosyaTablosu(Base):
+    __tablename__ = "pdf_dosyalari"
+    id = Column(Integer, primary_key=True, index=True)
+    dosya_adi = Column(String, nullable=False)
+    paragraflar = relationship("PDFParagrafTablosu", back_populates="pdf", cascade="all, delete-orphan")
+
+class PDFParagrafTablosu(Base):
+    __tablename__ = "pdf_paragraflar"
+    id = Column(Integer, primary_key=True, index=True)
+    pdf_id = Column(Integer, ForeignKey("pdf_dosyalari.id", ondelete="CASCADE"), nullable=False)
+    metin_icerigi = Column(Text, nullable=False)
+    embedding = Column(Text, nullable=True)
+
+    pdf = relationship("PDFDosyaTablosu", back_populates="paragraflar")
+    
