@@ -20,9 +20,11 @@ client = genai.Client()
 # =====================================================================
 def pdf_metnini_oku(file_path: str) -> str:
     tum_metin = ""
-    reader=PdfReader(file_path)
+    reader = PdfReader(file_path)
     for page in reader.pages:
-        tum_metin += page.extract_text()
+        text = page.extract_text()
+        if text:  # Sayfa boş veya resim ise None dönebilir, hata almamak için kontrol ekliyoruz
+            tum_metin += text + "\n"
     return tum_metin
 
 
