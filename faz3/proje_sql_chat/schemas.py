@@ -7,14 +7,21 @@ from typing import Optional
 # =====================================================================
 # (Referans: faz3/proje_pdf_chat/schemas.py içindeki PDFDosyaResponse şeması.)
 # =====================================================================
+class PDFDosyaResponse(BaseModel):
+    id: int = Field(ge=0, description="PDF dosyasının veritabanındaki benzersiz kimlik numarası")
+    dosya_adi: str = Field(min_length=1, max_length=255, description="Yüklenen PDF dosyasının adı")
 
+    class Config:
+        from_attributes = True
+    
 
 # =====================================================================
 # 🎯 TODO 7: SOHBET İSTEK ŞEMASINI YAZIN (ChatSoruRequest)
 # =====================================================================
 # (Referans: faz3/proje_pdf_chat/schemas.py içindeki ChatSoruRequest şeması.)
 # =====================================================================
-
+class ChatSoruRequest(BaseModel):
+    soru: str = Field(min_length=3, description="PDF içeriğine sorulacak soru metni")
 
 # =====================================================================
 # 🎯 TODO 8: BİRLEŞİK SOHBET CEVAP ŞEMASINI OLUŞTURUN (ChatCevapResponse)
@@ -30,3 +37,10 @@ from typing import Optional
 # - tablo_verisi: Eğer niyet "VERITABANI_ANALIZ" ise, SQL sorgusunun veritabanından getirdiği
 #   ham satırların sözlük (dict) formatındaki listesi. Grafik çizmek için JS'e gönderilir (Optional list[dict])
 # =====================================================================
+
+class ChatCevapResponse(BaseModel):
+    niyet: str = Field(..., description="Cevabın türünü belirtir (BELGE_ARAMA veya VERITABANI_ANALIZ)")
+    cevap: str = Field(..., description="Yapay zekanın kullanıcıya yazdığı açıklayıcı cevap")
+    kaynaklar: Optional[list[str]] = Field(None, description="Cevabın oluşturulmasında kanıt olarak kullanılan PDF paragraf listesi")
+    sql_sorgusu: Optional[str] = Field(None, description="Çalıştırılan SQL sorgusu")
+    tablo_verisi: Optional[list[dict]] = Field(None, description="SQL sorgusunun veritabanından getirdiği ham satırların sözlük formatındaki listesi")
