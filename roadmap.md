@@ -49,9 +49,9 @@ Bu döküman, Python temellerinden başlayarak SQL, FastAPI, RAG sistemleri, Lan
 ## 🚀 FAZ 5: İleri Düzey RAG & Bilgi Grafikleri (Advanced RAG)
 > *Amaç: Üretim ortamlarında RAG arama kalitesini ve çıkarım yeteneğini en üst düzeye çıkarmak.*
 
-- [ ] **Query Translation & Decomposition:** Kullanıcı sorusunu analiz edip alt sorgulara bölme ve paralel arama yapma (Query Rewrite).
-- [ ] **Reranking:** Cohere Reranker veya BGE Reranker entegrasyonu ile en alakalı dökümanları yukarı taşıyarak LLM bağlam kalitesini artırma.
-- [ ] **Microsoft GraphRAG:** Dökümanlardaki varlıkları (entities) ve ilişkileri çıkarıp Neo4j veya benzeri grafik veritabanlarında Bilgi Grafiği (Knowledge Graph) oluşturarak ilişkisel RAG yapma.
+- [x] **Query Translation & Decomposition:** Kullanıcı sorusunu analiz edip alt sorgulara bölme ve paralel arama yapma (Query Rewrite).
+- [x] **Reranking:** Cohere Reranker veya BGE Reranker entegrasyonu ile en alakalı dökümanları yukarı taşıyarak LLM bağlam kalitesini artırma.
+- [x] **Microsoft GraphRAG:** Dökümanlardaki varlıkları (entities) ve ilişkileri çıkarıp Neo4j veya benzeri grafik veritabanlarında Bilgi Grafiği (Knowledge Graph) oluşturarak ilişkisel RAG yapma.
 
 ---
 
