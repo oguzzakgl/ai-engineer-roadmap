@@ -1,3 +1,13 @@
+## 2026-08-11 06:05 - Faz 5: İleri Düzey RAG Başlangıcı (Query Translation)
+
+### YAPILANLAR:
+- [06_ileri_duzey_rag_sistemleri/01_query_translation_ve_decomposition.py](file:///c:/Users/ouz/Desktop/ai-engineer-roadmap/06_ileri_duzey_rag_sistemleri/01_query_translation_ve_decomposition.py) - Multi-Query, döküman tekilleştirme ve Query Decomposition pratik kodu ve test senaryosu başarıyla oluşturuldu.
+
+### KARARLAR:
+- Karmaşık veya genel sorgularda arama başarısını artırmak için LLM ile sorgu zenginleştirme (Query Translation) ve çok adımlı sorgu parçalama (Decomposition) mimarileri pratik edildi.
+
+---
+
 ## 2026-08-11 02:41 - Faz 6: Arize Phoenix İzlenebilirlik Entegrasyonu ve Ajan Testi
 
 ### YAPILANLAR:
