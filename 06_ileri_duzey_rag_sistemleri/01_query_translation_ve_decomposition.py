@@ -68,8 +68,25 @@ def uret_alternatif_sorgular(orijinal_sorgu: str) -> list[str]:
     - Dönen metni satır bazlı ayırıp (.split('\n')) boş satırları temizleyin.
     - Listenin sonuna orijinal sorgunun kendisini de eklemeyi unutmayın!
     """
-    # TODO: Kodunuzu buraya yazın
-    return [orijinal_sorgu]
+    prompt = ChatPromptTemplate.from_template(
+    "Sen bir arama asistanısın. Kullanıcının verdiği soruyu "
+    "vektör veritabanında aratmak üzere 3 farklı alternatif cümleyle yeniden yaz.\n"
+    "Kurallar:\n"
+    "- Her alternatif soruyu yeni bir satırda yaz.\n"
+    "- Başına numara (1, 2, 3) veya işaret koyma.\n\n"
+    "Kullanıcı Sorusu: {soru}\n"
+    "Alternatif Sorgular:"
+)
+    
+    chain = prompt | llm | StrOutputParser()
+    
+    yanit = chain.invoke({"soru": orijinal_sorgu})
+
+    sorgular = [s.strip() for s in yanit.split('\n') if s.strip()]
+
+    sorgular.append(orijinal_sorgu)
+
+    return sorgular
 
 
 # =====================================================================
@@ -85,8 +102,13 @@ def dökümanlari_tekillestir(döküman_listesi: list[Document]) -> list[Documen
     - Liste içindeki her dökümanın page_content değerini kontrol edip sadece benzersiz olanları 
       yeni bir döküman listesine ekleyin.
     """
-    # TODO: Kodunuzu buraya yazın
-    return döküman_listesi
+    gorulenler = set()
+    yeni_liste = []
+    for doc in döküman_listesi:
+        if doc.page_content not in gorulenler:
+            gorulenler.add(doc.page_content)
+            yeni_liste.append(doc)
+    return yeni_liste
 
 
 # =====================================================================
@@ -102,8 +124,27 @@ def sorguyu_alt_parcalara_bol(karmaşik_sorgu: str) -> list[str]:
       dönmesini isteyen bir ChatPromptTemplate yazın.
     - Çıktıyı parse edin ve satırlara bölerek bir liste olarak döndürün.
     """
-    # TODO: Kodunuzu buraya yazın
-    return [karmaşik_sorgu]
+    prompt = ChatPromptTemplate.from_template(
+    """
+    Sen bir soru analizörüsün. Aşağıdaki karmaşık soruyu, vektör veritabanında 
+    ayrı ayrı aranabilecek 2 adet bağımsız basit alt soruya ayır.
+
+    Kurallar:
+    - Her alt soruyu yeni bir satırda yaz.
+    - Basit ve anlaşılır cümleler kullan.
+    - Karşılaştırma veya çok adımlı mantığı koru ama sorguları sadeleştir.
+
+    Karmaşık Soru: {soru}
+    Alt Sorular:
+    """
+)
+    chain = prompt | llm | StrOutputParser()
+
+    yanit = chain.invoke({"soru": karmaşik_sorgu})
+    
+    alt_sorgular = [s.strip() for s in yanit.split('\n') if s.strip()]
+    
+    return alt_sorgular
 
 
 # =====================================================================
@@ -132,7 +173,7 @@ if __name__ == "__main__":
     print(f"\nToplam dönen ham döküman sayısı: {len(toplam_dökümanlar)}")
     
     tekil_sonuclar = dökümanlari_tekillestir(toplam_dökümanlar)
-    print(f"Tekilleştirilmiş döküman sayısı: {tekil_sonuclar}")
+    print(f"Tekilleştirilmiş döküman sayısı: {len(tekil_sonuclar)}")
     print("\nBulunan Bağlamlar (Contexts):")
     for doc in tekil_sonuclar:
         print(f"  - {doc.page_content}")
