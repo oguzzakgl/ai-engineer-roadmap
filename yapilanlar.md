@@ -1,3 +1,13 @@
+## 2026-08-11 06:40 - Faz 5: İleri Düzey RAG - Reranking Başlangıcı
+
+### YAPILANLAR:
+- [06_ileri_duzey_rag_sistemleri/02_reranking_ve_cross_encoder.py](file:///c:/Users/ouz/Desktop/ai-engineer-roadmap/06_ileri_duzey_rag_sistemleri/02_reranking_ve_cross_encoder.py) - LLM tabanlı Rerank puanlama ve yeniden sıralama pratik şablonu oluşturuldu.
+
+### KARARLAR:
+- Vektör benzerliği odaklı hızlı aramadan dönen geniş döküman setlerini derinlemesine sıralayabilmek için Gemini tabanlı bir Rerank mekanizması tasarlanması kararlaştırıldı.
+
+---
+
 ## 2026-08-11 06:05 - Faz 5: İleri Düzey RAG Başlangıcı (Query Translation)
 
 ### YAPILANLAR:
