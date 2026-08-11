@@ -1,9 +1,21 @@
+# Python ve sanal ortam dosyaları
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.pytest_cache/
+*.py[cod]
+*$py.class
 .venv/
-env/
 venv/
 ENV/
+env/
+.pytest_cache/
+
+# Çevre değişkenleri ve hassas bilgiler (ÇOK ÖNEMLİ!)
+.env
+
+# Veritabanı ve RAG kalıntıları
+.chroma/
+*.db
+chroma/
+
+# Test dosyaları ve PDF'ler
+*.pdf
+.tempmediaStorage/
