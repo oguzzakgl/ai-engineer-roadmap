@@ -75,9 +75,39 @@ def gemini_ile_dokumanlari_puanla(soru: str, dokumanlar: list[Document]) -> list
     """
     puanlanmis_list = []
     
-    # TODO: Kodunuzu buraya yazın
-    
+    prompt = ChatPromptTemplate.from_template(
+    """
+    Sen bir döküman değerlendirme uzmanısın. Sana verilen bir soruyu ve bir dökümanı incele.
+    Bu dökümanın soruyla ne kadar ilgili olduğunu 0.0 ile 10.0 arasında puanla.
+
+    Kurallar:
+    - 0.0: Kesinlikle alakasız, konu dışı.
+    - 5.0: Orta düzeyde ilgili, genel bilgi içeriyor olabilir.
+    - 10.0: Tam olarak aranan kişiyi veya bilgiyi içeriyor, doğrudan alakalı.
+    - Sadece puanı (float) döndür, açıklama yapma.
+
+    Soru: {soru}
+    Döküman: {dokuman}
+
+    Puan (0.0 - 10.0 arası): 
+    """
+)
+    chain = prompt | llm | StrOutputParser()
+
+    for dokuman in dokumanlar:
+        yanit = chain.invoke({
+            "soru": soru,
+            "dokuman": dokuman.page_content
+        })
+        try:
+            puan = float(yanit.strip())
+        except ValueError:
+            puan = 0.0
+            
+        puanlanmis_list.append((dokuman, puan))
+        
     return puanlanmis_list
+
 
 
 # =====================================================================
@@ -94,8 +124,11 @@ def rerank_dokumanlari(puanlanmis_dokumanlar: list[tuple[Document, float]], top_
     - Büyükten küçüğe sıralama için reverse=True parametresini ekleyin.
     - Sıralanan listeden sadece Document nesnelerini çıkarıp ilk top_n elemanı dilimleyin (slicing).
     """
-    # TODO: Kodunuzu buraya yazın
-    return []
+    siralanmis = sorted(puanlanmis_dokumanlar, key=lambda x: x[1], reverse=True)
+
+    en_iyi_dokumanlar = [doc for doc, puan in siralanmis[:top_n]]
+
+    return en_iyi_dokumanlar
 
 
 # =====================================================================
@@ -109,7 +142,7 @@ if __name__ == "__main__":
     print("="*60)
     
     test_soru = "FastAPI ve web backend projelerinde deneyimli uzman Python geliştiricisi arıyoruz."
-    print(f"Kullanıcı İhtiyacı / Soru: '{test_sorgu}'\n")
+    print(f"Kullanıcı İhtiyacı / Soru: '{test_soru}'\n")
     
     # Adım 1: Standart Vektör Araması ile geniş havuzu çekelim (k=5)
     ham_dokümanlar = retriever.invoke(test_soru)

@@ -1,3 +1,13 @@
+## 2026-08-11 07:05 - Faz 5: İleri Düzey RAG - Mini GraphRAG Başlangıcı
+
+### YAPILANLAR:
+- [06_ileri_duzey_rag_sistemleri/03_graph_rag_temelleri.py](file:///c:/Users/ouz/Desktop/ai-engineer-roadmap/06_ileri_duzey_rag_sistemleri/03_graph_rag_temelleri.py) - Bilgi Grafiği (Knowledge Graph) varlık çıkarımı ve çok adımlı arama (Multi-hop retrieval) pratik şablonu oluşturuldu.
+
+### KARARLAR:
+- RAG sistemlerinde paragraflar arası ilişkileri ve dolaylı bağlantıları yakalayabilmek amacıyla hafif bir GraphRAG simülasyonu tasarlanması kararlaştırıldı.
+
+---
+
 ## 2026-08-11 06:40 - Faz 5: İleri Düzey RAG - Reranking Başlangıcı
 
 ### YAPILANLAR:
