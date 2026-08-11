@@ -66,8 +66,37 @@ def ilişkileri_ve_varliklari_cikar(metin: str) -> list[dict]:
       kod blokları (```json) veya ekstra metinler yazmamasını söyleyin.
     - JSON çıktısının parse edilebilmesi için json.loads() kullanın. Hata durumunda boş liste dönün.
     """
-    # TODO: Kodunuzu buraya yazın
-    return []
+    prompt = ChatPromptTemplate.from_template(
+        """
+        Sen bir metin analizi uzmanısın. Aşağıdaki metni inceleyerek varlıkları (özneleri/nesneleri) ve ilişkileri (eylemleri) çıkar.
+        
+        Metin: {metin}
+        
+        Çıktı formatı (Sadece ve sadece saf JSON listesi): 
+        [
+          {{"entity_1": "özne", "relationship": "ilişki/eylem", "entity_2": "nesne"}}
+        ]
+        
+        Kurallar:
+        - Yanıt sadece geçerli bir JSON listesi olmalı.
+        - Açıklama veya kod blokları (```json) ekleme.
+        - Düğümleri (entity_1 ve entity_2) mutlaka olabildiğince kısa, yalın ve standart isimler olarak çıkarın. 
+          Örn: 'AI Career Assistant adında bir otonom proje' yerine sadece 'AI Career Assistant' yazın.
+          Örn: 'LangGraph ajan mimarisi' yerine sadece 'LangGraph' yazın.
+        """
+    )
+
+    chain = prompt | llm | StrOutputParser()
+    yanit = chain.invoke({"metin": metin})
+    
+    # 📌 LLM'den gelen metni temizleyip Python objesine (List) çeviriyoruz:
+    try:
+        # Markdown kod bloklarını temizleme önlemi
+        temiz_yanit = yanit.strip().replace("```json", "").replace("```", "").strip()
+        return json.loads(temiz_yanit)
+    except Exception:
+        return []  # Hata durumunda boş liste dön
+
 
 
 # =====================================================================
@@ -93,13 +122,37 @@ def grafik_uzerinde_ara(baslangic_dugumu: str, grafik: list[dict]) -> list[str]:
     - Benzersiz ilişkileri listelemek için bir döngü kurun.
     """
     bulunan_ilişkiler = []
-    ziyaret_edilen_dugumler = set([baslangic_dugumu.lower().strip()])
-    ziyaret_edilecek_dugumler = [baslangic_dugumu.lower().strip()]
+    baslangic_temiz = baslangic_dugumu.strip().lower()
     
-    # TODO: Grafik üzerinde gezinme (Graph Traversal) mantığını kodlayın.
-    # 1. derece ve 2. derece bağlantıları bularak açıklayıcı metinler (Örn: 'X -> Y -> Z') üretin.
+    # Ziyaret ettiğimiz düğümleri aklımızda tutarak sonsuz döngüyü engelliyoruz
+    ziyaret_edilenler = set()
+    # Arama sırasını tutan kuyruk (Queue)
+    kuyruk = [baslangic_temiz]
     
+    while kuyruk:
+        # Kuyruktan sıradaki düğümü alıyoruz
+        aktif_dugum = kuyruk.pop(0)
+        
+        if aktif_dugum in ziyaret_edilenler:
+            continue
+        ziyaret_edilenler.add(aktif_dugum)
+        
+        # Grafikte aktif düğümün bağlı olduğu her şeyi arıyoruz
+        for iliski in grafik:
+            e1 = iliski.get("entity_1", "").strip().lower()
+            r = iliski.get("relationship", "").strip()
+            e2 = iliski.get("entity_2", "").strip()
+            
+            if e1 == aktif_dugum:
+                cumle = f"{iliski.get('entity_1')} --[{r}]--> {e2}"
+                if cumle not in bulunan_ilişkiler:
+                    bulunan_ilişkiler.append(cumle)
+                
+                # Yeni ulaştığımız nesneyi de (entity_2) arama kuyruğuna ekliyoruz
+                kuyruk.append(e2.strip().lower())
+                
     return bulunan_ilişkiler
+
 
 
 # =====================================================================
@@ -130,7 +183,7 @@ if __name__ == "__main__":
     hedef = "Oguz Kaan"
     sonuclar = grafik_uzerinde_ara(hedef, bilgi_grafigi)
     
-    print(f"'{hedef}' için bulunan 1. ve 2. Derece Akış Zinciri:")
+    print(f"'{hedef}' için bulunan Dinamik Bağlantı Zinciri:")
     for s in sonuclar:
         print(f"  🔗 {s}")
         
