@@ -1,3 +1,13 @@
+## 2026-08-16 03:12 - Faz 6: Gelişmiş Ajan Tasarım Kalıpları - Self-Correction Başlangıcı
+
+### YAPILANLAR:
+- [07_gelismis_ajanlar/01_self_reflection_ve_correction.py](file:///c:/Users/ouz/Desktop/ai-engineer-roadmap/07_gelismis_ajanlar/01_self_reflection_ve_correction.py) - Ajanın kendi yazdığı kodu çalıştırıp aldığı IndexError/SyntaxError gibi hataları LLM feedback döngüsüyle düzelten otonom Self-Correction yapısı kuruldu.
+
+### KARARLAR:
+- Ajanların hata durumunda çökmek yerine hatalarını kendi kendine analiz edip düzeltebilmesi (Self-Reflection) amacıyla dinamik exec() araç kontrol döngüsü kurulması kararlaştırıldı.
+
+---
+
 ## 2026-08-11 07:05 - Faz 5: İleri Düzey RAG - Mini GraphRAG Başlangıcı
 
 ### YAPILANLAR:
