@@ -1,0 +1,335 @@
+﻿/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap');
+
+/* CSS Variables for Retro-Futuristic Theme */
+:root {
+    --bg-dark: #1a1a2e; /* Deep dark background */
+    --bg-medium: #2e2e4a; /* Slightly lighter for cards/sections */
+    --text-light: #e0e0e0; /* Light grey text */
+    --text-accent-cyan: #00e6e6; /* Cyan neon accent */
+    --text-accent-magenta: #ff00ff; /* Magenta neon accent */
+    --button-primary-bg: #00e6e6; /* Cyan for add/complete */
+    --button-primary-text: #1a1a2e; /* Dark text for primary buttons */
+    --button-danger-bg: #ff007f; /* Pink/red for delete */
+    --button-danger-text: #1a1a2e; /* Dark text for danger buttons */
+    --glow-cyan: 0 0 8px var(--text-accent-cyan), 0 0 16px var(--text-accent-cyan);
+    --glow-magenta: 0 0 8px var(--text-accent-magenta), 0 0 16px var(--text-accent-magenta);
+    --border-neon-cyan: 1px solid var(--text-accent-cyan);
+    --border-neon-magenta: 1px solid var(--text-accent-magenta);
+    --shadow-neon-cyan: 0 0 10px rgba(0, 230, 230, 0.6);
+    --shadow-neon-magenta: 0 0 10px rgba(255, 0, 255, 0.6);
+    --font-primary: 'Orbitron', sans-serif; /* Retro-futuristic font for titles */
+    --font-secondary: 'Rajdhani', sans-serif; /* Modern sans-serif for body text */
+}
+
+/* Basic Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body Styling */
+body {
+    font-family: var(--font-secondary);
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    line-height: 1.6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-image: radial-gradient(circle at center, rgba(46, 46, 74, 0.8) 0%, rgba(26, 26, 46, 1) 70%);
+    overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Main Container */
+.container {
+    width: 100%;
+    max-width: 700px;
+    background-color: var(--bg-medium);
+    border-radius: 15px;
+    box-shadow: var(--shadow-neon-cyan);
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    border: var(--border-neon-cyan);
+}
+
+/* Header */
+.app-header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed rgba(0, 230, 230, 0.3);
+}
+
+.app-header h1 {
+    font-family: var(--font-primary);
+    font-size: 2.8rem;
+    color: var(--text-accent-cyan);
+    text-shadow: var(--shadow-neon-cyan);
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+/* Main Section */
+.app-main {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Task Input Section */
+.task-input-section {
+    background-color: rgba(46, 46, 74, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 230, 230, 0.2);
+}
+
+.task-form {
+    display: flex;
+    gap: 10px;
+}
+
+.task-form input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 2px solid var(--text-accent-cyan);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.4);
+    color: var(--text-light);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.task-form input[type="text"]::placeholder {
+    color: rgba(224, 224, 224, 0.6);
+}
+
+.task-form input[type="text"]:focus {
+    border-color: var(--text-accent-magenta);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+/* General Button Styling */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-secondary);
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    outline: none;
+    position: relative; /* For potential pseudo-element glows */
+    overflow: hidden;
+}
+
+/* Add Task Button */
+.add-task-button {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    box-shadow: 0 0 5px var(--button-primary-bg);
+}
+
+.add-task-button:hover {
+    background-color: var(--text-accent-magenta);
+    color: var(--button-primary-text);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
+}
+
+/* Task List Section */
+.task-list-section h2 {
+    font-family: var(--font-primary);
+    font-size: 1.8rem;
+    color: var(--text-accent-magenta);
+    text-shadow: var(--shadow-neon-magenta);
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.task-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Dynamically created task item */
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(46, 46, 74, 0.7);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 0, 255, 0.2);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.task-item:hover {
+    background-color: rgba(46, 46, 74, 0.9);
+    border-color: var(--text-accent-magenta);
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.4);
+}
+
+.task-text {
+    flex-grow: 1;
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-right: 15px;
+    word-break: break-word; /* Handle long task names */
+}
+
+.task-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Complete Button */
+.complete-btn {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    box-shadow: 0 0 5px var(--button-primary-bg);
+}
+
+.complete-btn:hover {
+    background-color: var(--text-accent-magenta);
+    color: var(--button-primary-text);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
+}
+
+/* Delete Button */
+.delete-btn {
+    background-color: var(--button-danger-bg);
+    color: var(--button-danger-text);
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    box-shadow: 0 0 5px var(--button-danger-bg);
+}
+
+.delete-btn:hover {
+    background-color: #ff4d94; /* Lighter red/pink */
+    color: var(--button-danger-text);
+    box-shadow: var(--glow-magenta);
+    transform: translateY(-2px);
+}
+
+/* Completed Task Styling */
+.task-item.completed {
+    background-color: rgba(0, 230, 230, 0.1); /* Subtle cyan background */
+    border-color: var(--button-primary-bg);
+    box-shadow: 0 0 10px rgba(0, 230, 230, 0.5);
+}
+
+.task-item.completed .task-text {
+    text-decoration: line-through;
+    color: rgba(224, 224, 224, 0.7);
+    font-style: italic;
+}
+
+.task-item.completed .complete-btn {
+    background-color: var(--text-accent-magenta); /* Change color when completed */
+    box-shadow: 0 0 5px var(--text-accent-magenta);
+}
+
+.task-item.completed .complete-btn:hover {
+    background-color: var(--button-primary-bg);
+    box-shadow: var(--glow-cyan);
+}
+
+/* Footer */
+.app-footer {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px dashed rgba(255, 0, 255, 0.3);
+    font-size: 0.9rem;
+    color: rgba(224, 224, 224, 0.7);
+}
+
+.app-footer p {
+    margin: 0;
+}
+
+/* Visually Hidden for Accessibility */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+        margin: 10px;
+    }
+
+    .app-header h1 {
+        font-size: 2rem;
+    }
+
+    .task-form {
+        flex-direction: column;
+    }
+
+    .task-form input[type="text"],
+    .add-task-button {
+        width: 100%;
+    }
+
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .task-text {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .task-actions {
+        width: 100%;
+        justify-content: flex-end; /* Align buttons to the right */
+    }
+
+    .complete-btn,
+    .delete-btn {
+        flex-grow: 1; /* Make buttons take equal width */
+        padding: 10px 15px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .app-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .task-list-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .complete-btn,
+    .delete-btn {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+}

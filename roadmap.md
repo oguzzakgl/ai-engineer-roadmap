@@ -58,8 +58,8 @@ Bu döküman, Python temellerinden başlayarak SQL, FastAPI, RAG sistemleri, Lan
 ## 🧠 FAZ 6: Gelişmiş Ajan Tasarım Kalıpları & Bellek (Advanced Agents)
 > *Amaç: Kendi kendini denetleyen ve uzun vadeli hafızaya sahip üst düzey ajan sistemleri kurmak.*
 
-- [ ] **Self-Reflection & Self-Correction:** Ajanın ürettiği çıktıyı (örneğin yazdığı SQL sorgusunu veya kodu) kendisinin çalıştırıp hata alırsa otomatik olarak düzeltmesi (Self-Correction/Reflection döngüleri).
-- [ ] **Hierarchical Multi-Agent Architectures:** Bir "Yönetici Ajan" (Supervisor Node) tasarlayarak işleri uzman alt ajanlara (Raporcu, Analist, Yazılımcı) dağıtma ve yönetme.
+- [x] **Self-Reflection & Self-Correction:** Ajanın ürettiği çıktıyı kendisinin çalıştırıp hata alırsa otomatik olarak düzeltmesi. (Klasör: `07_gelismis_ajanlar`)
+- [ ] **Hierarchical Multi-Agent Architectures:** Bir "Yönetici Ajan" (Supervisor Node) tasarlayarak işleri uzman alt ajanlara dağıtma ve yönetme.
 - [ ] **Long-Term Semantic Memory:** Kullanıcı tercihlerini ve geçmiş konuşmaları PostgreSQL/ChromaDB üzerinde vektörel olarak saklayıp gelecekteki sohbetlerde otomatik hatırlama.
 
 ---
@@ -88,3 +88,13 @@ Bu döküman, Python temellerinden başlayarak SQL, FastAPI, RAG sistemleri, Lan
 
 - [ ] **NeMo Guardrails & Llama Guard:** LLM giriş ve çıkışlarına güvenlik duvarı kurarak prompt injection ve uygunsuz içerik üretimini engelleme.
 - [ ] **Prompt Injection & Jailbreak Defenses:** Sistem talimatlarını koruma yöntemleri ve LLM güvenlik açığı testleri (Red-Teaming).
+
+---
+
+## 🏆 KANIT (CAPSTONE) PROJESİ: **LLM QualityGuard** (Yarı-Aktif)
+> *Amaç: Tüm bu eğitim serisinde öğrenilen becerileri tek bir büyük SaaS ürününde birleştirmek.*
+
+- [ ] **GitHub OAuth Bağlantısı:** Kullanıcının gizli veya açık depolarına güvenli bir şekilde bağlanma.
+- [ ] **Otonom Docker Sandbox:** Projeleri izole bir ortamda ayağa kaldırıp sızma testleri yapma.
+- [ ] **Gelişmiş Metrikler:** Groundedness, Hallucination ve Latency değerlerini hesaplama.
+- [ ] **Neo4j Hata Dağılımı:** Başarısız testleri hata türleri ve prompt versiyonlarıyla graf olarak haritalama.

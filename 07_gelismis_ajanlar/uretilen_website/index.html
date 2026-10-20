@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Task Manager</title>
+    <link rel='stylesheet' href='style.css'>
+</head>
+<body>
+    <div class="container">
+        <header class="app-header">
+            <h1>Neon Task Manager</h1>
+        </header>
+
+        <main class="app-main">
+            <section class="task-input-section">
+                <form id="task-form" class="task-form">
+                    <label for="new-task-input" class="visually-hidden">Yeni görev ekle</label>
+                    <input type="text" id="new-task-input" placeholder="Yeni görev ekle..." aria-label="Yeni görev metni">
+                    <button type="submit" id="add-task-button" class="add-task-button">Ekle</button>
+                </form>
+            </section>
+
+            <section class="task-list-section">
+                <h2>Görevlerim</h2>
+                <ul id="task-list" class="task-list" aria-live="polite">
+                    <!-- Görevler buraya JavaScript ile eklenecek -->
+                    <!-- Örnek bir görev yapısı:
+                    <li class="task-item">
+                        <span class="task-text">Örnek Görev 1</span>
+                        <div class="task-actions">
+                            <button class="complete-button" aria-label="Görevi tamamla">Tamamla</button>
+                            <button class="delete-button" aria-label="Görevi sil">Sil</button>
+                        </div>
+                    </li>
+                    -->
+                </ul>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2023 Retro-Futuro Labs</p>
+        </footer>
+    </div>
+
+    <script src='app.js' defer></script>
+</body>
+</html>
