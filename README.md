@@ -31,5 +31,3 @@ Depo, adım adım öğrenilen konulara ve pratik çalışmalara göre sıralanm�
 *   **Gözlemlenebilirlik (MLOps):** Arize Phoenix, OpenTelemetry
 
 ---
-
-*Bu çalışma alanı, modern LLM uygulama geliştirme, yapay zeka ajanları ve MLOps standartlarına uyum sağlamak üzere tasarlanmıştır.*
